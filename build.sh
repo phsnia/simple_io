@@ -1,8 +1,8 @@
 set -e 
 
-CXX="clang++"
+CXX="clang"
 FLAGS="-Wall -Wextra -O2"
-SRC="src/main.cc"
+SRC="src/main.c"
 OUT="bin/main.exe"
 
 mkdir -p bin

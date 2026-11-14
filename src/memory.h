@@ -1,5 +1,3 @@
-#include "deque.hpp"
-
 /**
  * @file: memory.cc
  */
