@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include "type.h"
 #include "templates.h"
+#include "memory.h"
 
 #ifndef DEQUE_INITIAL_CAPACITY
 #define DEQUE_INITIAL_CAPACITY 8
@@ -35,7 +36,7 @@ typedef struct TEMPLATE(deque, T) {
 static inline void TEMPLATE(deque_init, T)(TEMPLATE(deque, T) **self) {
     if (!self) return;
 
-    TEMPLATE(deque, T) *dq = malloc(sizeof *dq);
+    TEMPLATE(deque, T) *dq = mmalloc(1, sizeof *dq);
     if (!dq) {
         *self = NULL;
         return;
@@ -66,9 +67,8 @@ static inline Bool TEMPLATE(deque_expand, T)(
     usz new_cap = self->capacity == 0 ? DEQUE_INITIAL_CAPACITY : self->capacity * 2;
 
     if (new_cap < self->capacity) return FALSE;              // overflow
-    if (new_cap > SIZE_MAX / sizeof(T)) return FALSE;        // overflow
 
-    T *new_data = malloc(new_cap * sizeof(T));
+    T *new_data = mmalloc(new_cap, sizeof(T));
     if (!new_data) return FALSE;
 
     for (usz i = 0; i < self->size; ++i) {

@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include "type.h"
 #include "templates.h"
+#include "memory.h"
 
 #ifndef MAP_INITIAL_CAPACITY
 #define MAP_INITIAL_CAPACITY 8
@@ -50,13 +51,13 @@ static inline void TEMPLATE(map_init, T) (
 ) {
     if(!self) return;
 
-    struct TEMPLATE(map, T) *map = malloc(sizeof *map);
+    struct TEMPLATE(map, T) *map = mmalloc(1, sizeof *map);
     if(!map) { *self = NULL; return; }
 
     map->nbuckets = MAP_INITIAL_CAPACITY;
     map->size = 0;
 
-    map->buckets = calloc(
+    map->buckets = mmcalloc(
         map->nbuckets,
         sizeof(*map->buckets)
     );
@@ -94,7 +95,7 @@ static inline void TEMPLATE(map_rehash, T) (
     if(!map || !map->buckets) return;
 
     struct TEMPLATE(map_entry, T) **nbks =
-        calloc(new_nbuckets, sizeof(*nbks));
+        mmcalloc(new_nbuckets, sizeof(*nbks));
     if(!nbks) return;
 
     for(usz i = 0; i < map->nbuckets; i++) {
@@ -135,7 +136,7 @@ static inline void TEMPLATE(map_set, T) (
         TEMPLATE(map_rehash, T)(map, map->nbuckets * 2);
     }
 
-    entry = malloc(sizeof(*entry));
+    entry = mmalloc(1, sizeof(*entry));
     if(!entry) return;
 
     entry->key = key;
